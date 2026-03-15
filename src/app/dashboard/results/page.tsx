@@ -51,7 +51,7 @@ function ResultsContent() {
         fetchAnalysis();
     }, [query]);
 
-    if (loading || !result) {
+    if (loading) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center min-h-[500px]">
                 <Loader2 className="w-12 h-12 text-cyber-accent animate-spin mb-4" />
@@ -59,6 +59,37 @@ function ResultsContent() {
                 <p className="text-cyber-text-secondary mt-2 font-mono">Cross-referencing global databases...</p>
             </div>
         );
+    }
+    
+    if (!result) {
+        return (
+             <div className="flex-1 flex flex-col items-center justify-center min-h-[500px]">
+                <AlertTriangle className="w-16 h-16 text-cyber-red mb-4 drop-shadow-[0_0_10px_rgba(255,51,51,0.5)]" />
+                <h2 className="text-2xl font-bold font-mono text-white tracking-widest uppercase mb-2">Analysis Failed</h2>
+                <p className="text-cyber-text-secondary font-mono max-w-md text-center mb-6">
+                    The AI core encountered an error while processing the request. This may be due to upstream API limits or malformed data.
+                </p>
+                <Link href="/dashboard" className="px-6 py-3 bg-cyber-bg border border-cyber-panel-border hover:border-white text-white font-mono text-sm uppercase tracking-widest transition-colors rounded">
+                    Return to Radar
+                </Link>
+            </div>
+        )
+    }
+    
+    // Check if result is an error object
+    if ((result as any).error) {
+        return (
+             <div className="flex-1 flex flex-col items-center justify-center min-h-[500px]">
+                <AlertTriangle className="w-16 h-16 text-cyber-red mb-4 drop-shadow-[0_0_10px_rgba(255,51,51,0.5)]" />
+                <h2 className="text-2xl font-bold font-mono text-white tracking-widest uppercase mb-2">API Error</h2>
+                <p className="text-cyber-text-secondary font-mono max-w-md text-center mb-6">
+                    {(result as any).error}
+                </p>
+                <Link href="/dashboard" className="px-6 py-3 bg-cyber-bg border border-cyber-panel-border hover:border-white text-white font-mono text-sm uppercase tracking-widest transition-colors rounded">
+                    Return to Radar
+                </Link>
+            </div>
+        )
     }
 
     return (
@@ -112,7 +143,7 @@ function ResultsContent() {
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            {result.sources.map((source, idx) => (
+                            {result.sources?.map((source, idx) => (
                                 <div key={idx} className="p-4 rounded-lg bg-cyber-bg border border-cyber-panel-border flex flex-col items-center text-center">
                                     <span className="font-bold text-white mb-2">{source.name}</span>
                                     {source.status === "contradicts" && (
@@ -148,7 +179,7 @@ function ResultsContent() {
                             AI Reasoning Engine
                         </h2>
                         <ul className="space-y-4">
-                            {result.reasoning.map((reason, idx) => (
+                            {result.reasoning?.map((reason, idx) => (
                                 <li key={idx} className="flex relative pl-8">
                                     <span className="absolute left-0 top-1 w-4 h-4 border border-cyber-accent/50 rounded-full flex items-center justify-center">
                                         <span className="w-1.5 h-1.5 bg-cyber-accent rounded-full" />

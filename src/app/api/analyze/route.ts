@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY?.trim();
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,12 +63,12 @@ ${input}
           temperature: 0.1
         },
         {
-          headers: {
-            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-            'HTTP-Referer': 'http://localhost:3000',
-            'X-Title': 'TruthGuard X',
-            'Content-Type': 'application/json'
-          }
+        headers: {
+                Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+                "HTTP-Referer": "https://ai-powered-ten.vercel.app",
+                "X-Title": "TruthGuard X",
+                "Content-Type": "application/json"
+}
         }
       );
 
